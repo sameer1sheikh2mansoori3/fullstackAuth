@@ -18,9 +18,11 @@ export async function POST(req: NextRequest) {
         password: hashedPassword
     })
     await user.save();
+    const userId = user._id;
 
-
+    const emailResponse = await sendEmail({ email, emailType: "VERIFY", userId });
     return NextResponse.json({
-        "message": user
+        "message": user,
+        'email': emailResponse
     })
 }
