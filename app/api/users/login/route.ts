@@ -5,17 +5,20 @@ import bcryptjs from 'bcryptjs'
 export async function POST(req: NextRequest) {
     const { email, password } = await req.json();
     const user = await User.findOne({ email });
-    console.log(user)
+
     if (!user) {
         return NextResponse.json({
             "message": "no user is found"
         })
     }
 
-    const isValidate = await bcryptjs.compareSync(password, user?.password);
-    if (!isValidate) {
+    const isValidate = bcryptjs.compareSync(password, user?.password);
+    console.log(isValidate)
+    if (isValidate === false) {
         return NextResponse.json({
-            "messgae": "password is wrong"
+            "message": "password is wrong",
+            "success": false
+
         })
     }
     const tokenData = {
